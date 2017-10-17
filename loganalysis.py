@@ -11,7 +11,7 @@ QUESTION1 = "The 3 most popular articles of all time"
 QUERY1 = (
     "SELECT title, COUNT(title) AS views " +
     "FROM log, articles " +
-    "WHERE path LIKE concat('%',slug,'%') " +
+    "WHERE path LIKE concat('/article/',slug) " +
     "AND status = '200 OK' AND method = 'GET' " +
     "GROUP BY title ORDER BY views DESC LIMIT 3")
 
@@ -25,12 +25,12 @@ QUERY2 = (
 # Days with more than 1% of request that lead to an error
 QUESTION3 = "Days with more than 1% of request that lead to an error"
 QUERY3 = (
-    "select a.date as date, trunc(error*100/correct::numeric,2) as errate " +
-    "from (select time::date as date, count(*) as error " +
-    "from log where status like '404%' group by time::date) as a, " +
-    "(select time::date as date, count(*) as correct  "
-    "from log where status like '200%' group by time::date) as b " +
-    "where a.date = b.date and  error*100/correct::numeric >1")
+    "SELECT a.date AS date, ROUND(error*100/correct::numeric,2) as errate " +
+    "FROM (SELECT time::date as date, count(*) as error " +
+    "FROM log WHERE status LIKE '404%' GROUP BY time::date) AS a, " +
+    "(SELECT time::date AS date, COUNT(*) AS correct  "
+    "FROM log GROUP BY time::date) AS b " +
+    "WHERE a.date = b.date AND  error*100/correct::numeric >1")
 
 
 # executes query

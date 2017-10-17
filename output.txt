@@ -13,4 +13,4 @@ The most popular article authors of all time are:
 
 Days with more than 1% of request that lead to an error are:
 
-	2016-07-17 -- 2.31% errors
+	2016-07-17 -- 2.26% errors
