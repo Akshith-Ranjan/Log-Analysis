@@ -6,6 +6,7 @@ import psycopg2
 
 DBNAME = "news"
 
+# The 3 most popular articles of all time
 QUESTION1 = "The 3 most popular articles of all time"
 QUERY1 = (
     "SELECT title, COUNT(title) AS views " +
@@ -14,12 +15,14 @@ QUERY1 = (
     "AND status = '200 OK' AND method = 'GET' " +
     "GROUP BY title ORDER BY views DESC LIMIT 3")
 
+# The most popular article authors of all time
 QUESTION2 = "The most popular article authors of all time"
 QUERY2 = (
     "SELECT name, COUNT(name) AS views FROM log, articles, authors " +
     "WHERE authors.id = articles.author AND path like concat('%',slug,'%') " +
     "AND status='200 OK' AND method='GET' GROUP BY name ORDER BY views DESC ")
 
+# Days with more than 1% of request that lead to an error
 QUESTION3 = "Days with more than 1% of request that lead to an error"
 QUERY3 = (
     "select a.date as date, trunc(error*100/correct::numeric,2) as errate " +
@@ -30,17 +33,20 @@ QUERY3 = (
     "where a.date = b.date and  error*100/correct::numeric >1")
 
 
+# executes query
 def get_result(cursor, query_string):
     cursor.execute(query_string)
     return cursor.fetchall()
 
 
+# print result
 def print_result(question, data):
     print("\n" + question + " are:\n")
     for a, b in data:
         print('\t"' + str(a) + '" -- ' + str(b) + " views")
 
 
+# print result
 def print_error_result(question, data):
     print("\n" + question + " are:\n")
     for a, b in data:
